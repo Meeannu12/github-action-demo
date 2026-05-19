@@ -10,5 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print Hello
-        run: echo "Hello GitHub Action 🚀"
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Show Files
+        run: ls
+
+      - name: Print Message
+        run: echo "Project Loaded 🚀"
