@@ -1,4 +1,4 @@
-name: My First Action
+name: Deploy Node App
 
 on:
   push:
@@ -6,15 +6,25 @@ on:
       - main
 
 jobs:
-  hello:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Connect VPS and Deploy
+        uses: appleboy/ssh-action@master
 
-      - name: Show Files
-        run: ls
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
 
-      - name: Print Message
-        run: echo "Project Loaded 🚀"
+          script: |
+            echo "Connected to VPS 🚀"
+
+            cd /var/www/github-action-demo
+
+            git pull origin main
+
+            npm install
+
+            pm2 restart app
