@@ -6,11 +6,31 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Connect VPS and Deploy
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Packages
+        run: npm install
+
+      - name: Check Project
+        run: node -c server.js
+
+  deploy:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@master
 
         with:
@@ -19,8 +39,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
 
           script: |
-            echo "Connected to VPS 🚀"
-
             cd /var/www/github-action-demo
 
             git pull origin main
